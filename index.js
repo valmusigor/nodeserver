@@ -21,7 +21,7 @@ app.post('/articles',(req,res,next)=>{
         if(err||!result) res.status(500).send('Error downloading article');
         Article.create({title:result.title, content:result.content},(err)=>{
         if(err) return next(err);
-        res.send('OK');
+        res.send('OK');п
         });
     });
     const article={title:req.body.title};
@@ -35,7 +35,7 @@ app.get('/articles/:id',(req,res,next)=>{
     res.send(article);
     });
 });
-app.post('/users',(req,res,next)=>{
+app.post('/signin',(req,res,next)=>{
     if(req.body.login){
     Article.find(req.body.login,(err,article)=>{
     if(err) return next(err);
@@ -45,6 +45,17 @@ app.post('/users',(req,res,next)=>{
     else
     res.json(JSON.stringify({status:'bad'}));
     });
+    }
+});
+app.post('/signup',(req,res,next)=>{no
+    if(req.body.email && req.body.pass){
+      Article.create({email:req.body.email, pass:req.body.pass}, (err, article)=>{
+        if(err) return next(err);
+        if(article)
+        res.json(JSON.stringify({status:'ok', id:article[0]}));
+        else
+        res.json(JSON.stringify({status:'bad'}));
+      });
     }
 });
 app.delete('/articles/:id',(req,res,next)=>{
@@ -57,6 +68,5 @@ app.delete('/articles/:id',(req,res,next)=>{
 });
 app.listen(app.get('port'),()=>{
     console.log(`App start on port: ${app.get('port')}`);
-    console.log(id);
 });
 module.exports=app;

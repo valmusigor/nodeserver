@@ -15,8 +15,8 @@ class Article{
         knex.select().from('user').where('email','=',id).asCallback(callback);
     }
     static create(data,callback)
-    {
-        knex('articles').insert({title:data.title, text:data.content}).asCallback(callback);
+    {  
+     knex('user').insert({login:data.email.split('@')[0] ,email:data.email, password:data.pass, role:'user'}).asCallback(callback);
     }
     static deleteItem(id, callback)
     {

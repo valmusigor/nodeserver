@@ -8,6 +8,25 @@ app.set('port',process.env.PORT||3001);
 app.use(bodyParser.json());//поддерживат тела запросов закодированные в json
 app.use(bodyParser.urlencoded({extended:true}));//поддерживает тела запросов в кодировке формы
 let id={};
+app.post('/rent',(req,res,next)=>{
+    //debugger;
+    const price = req.body.price;
+    const square = req.body.square;
+    const firma = req.body.firma;
+    const address = req.body.address;
+    const floor = req.body.floor;
+    
+    Article.findAdsRent({price, square, firma, address, floor},(err, listAds)=>{
+   // debugger;
+    if(err) return next(err);
+    if(listAds.length!=0 ){
+    res.json(JSON.stringify({status:'ok', listAds}));
+    }
+    else
+    res.json(JSON.stringify({status:'bad'}));
+    });
+});
+
 app.get('/users',(req,resp,next)=>{
     Article.all((err , articles)=>
     {

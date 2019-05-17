@@ -9,18 +9,22 @@ app.use(bodyParser.json());//поддерживат тела запросов з
 app.use(bodyParser.urlencoded({extended:true}));//поддерживает тела запросов в кодировке формы
 let id={};
 app.post('/rent',(req,res,next)=>{
-    //debugger;
+    debugger;
     const price = req.body.price;
     const square = req.body.square;
     const firma = req.body.firma;
     const address = req.body.address;
     const floor = req.body.floor;
-    
-    Article.findAdsRent({price, square, firma, address, floor},(err, listAds)=>{
-   // debugger;
+    const currentPage = req.body.currentPage;
+    Article.findAdsRentCount({price, square, firma, address, floor},(err, countAds)=>{
+    //debugger;
     if(err) return next(err);
-    if(listAds.length!=0 ){
-    res.json(JSON.stringify({status:'ok', listAds}));
+    if(countAds.length!=0 && countAds[0].totalCount!=0){
+    Article.findAdsRent({price, square, firma, address, floor, currentPage},(err, listAds)=>{
+    //debugger;
+        if(err) return next(err);
+    res.json(JSON.stringify({status:'ok', listAds, totalPageSize:countAds[0].totalCount}));
+    });
     }
     else
     res.json(JSON.stringify({status:'bad'}));

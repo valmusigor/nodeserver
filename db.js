@@ -14,10 +14,19 @@ class Article{
     .andWhere('square','<=',searchParams.square)
     .andWhere('firma','like',(searchParams.firma==='all')?'%':searchParams.firma)
     .andWhere('address','like',(searchParams.address==='all')?'%':searchParams.address)
-    .andWhere('floor','like',(searchParams.floor==='all')?'%':searchParams.floor)
+    .andWhere('floor','like',(searchParams.floor==='all')?'%':searchParams.floor).limit(3).offset(searchParams.currentPage*3)
     .asCallback(callback);
-   
     }
+    static findAdsRentCount(searchParams,callback){
+        // debugger;
+     knex.select().count({totalCount:'*'}).from('rent').where('price','<=',searchParams.price)
+     .andWhere('square','<=',searchParams.square)
+     .andWhere('firma','like',(searchParams.firma==='all')?'%':searchParams.firma)
+     .andWhere('address','like',(searchParams.address==='all')?'%':searchParams.address)
+     .andWhere('floor','like',(searchParams.floor==='all')?'%':searchParams.floor).asCallback(callback);
+     }
+    
+
     static all(callback){
         knex.select().from('user').asCallback(callback);
     }

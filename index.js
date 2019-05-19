@@ -70,9 +70,9 @@ app.post('/signin',(req,res,next)=>{
     });
     }
 });
-app.post('/signup',(req,res,next)=>{no
-    if(req.body.email && req.body.pass){
-      Article.create({email:req.body.email, pass:req.body.pass}, (err, article)=>{
+app.post('/signup',(req,res,next)=>{
+    if(req.body.login && req.body.pass){
+      Article.create({email:req.body.login, pass:req.body.pass}, (err, article)=>{
         if(err) return next(err);
         if(article)
         res.json(JSON.stringify({status:'ok', id:article[0]}));

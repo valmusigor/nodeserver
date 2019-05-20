@@ -35,6 +35,7 @@ class Article{
     }
     static create(data,callback)
     {  
+        debugger;
      knex('user').insert({login:data.email.split('@')[0] ,email:data.email, password:data.pass, role:'user'}).asCallback(callback);
     }
     static deleteItem(id, callback)

@@ -7,12 +7,13 @@
     "start": "node index.js",
     "serve": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "inspect":"node --inspect index.js"
+    "inspect": "node --inspect index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^3.0.6",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "knex": "^0.16.5",

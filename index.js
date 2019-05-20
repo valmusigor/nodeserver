@@ -4,6 +4,7 @@ const articles=[{title:'HEAD'}];
 const bodyParser=require('body-parser');
 const Article = require('./db').Article;
 const read = require('node-readability');
+const bcrypt = require('bcrypt');
 app.set('port',process.env.PORT||3001);
 app.use(bodyParser.json());//поддерживат тела запросов закодированные в json
 app.use(bodyParser.urlencoded({extended:true}));//поддерживает тела запросов в кодировке формы
@@ -62,23 +63,35 @@ app.post('/signin',(req,res,next)=>{
     if(req.body.login){
     Article.find(req.body.login,(err,article)=>{
     if(err) return next(err);
-    if(article.length!=0 && req.body.pass==article[0].password){
-    res.json(JSON.stringify({status:'ok', id:article[0].id}));
-    }
-    else
-    res.json(JSON.stringify({status:'bad'}));
-    });
+      if(article.length!=0){
+        bcrypt.compare(req.body.pass, article[0].password, function(err, result) {
+            if(result)
+            res.json(JSON.stringify({status:'ok', id:article[0].id}));
+            else if(!result || err)
+            res.json(JSON.stringify({status:'bad'}));
+            });
+      }
+      else res.json(JSON.stringify({status:'bad'}));
+    });  
     }
 });
 app.post('/signup',(req,res,next)=>{
+
     if(req.body.login && req.body.pass){
-      Article.create({email:req.body.login, pass:req.body.pass}, (err, article)=>{
-        if(err) return next(err);
-        if(article)
-        res.json(JSON.stringify({status:'ok', id:article[0]}));
-        else
-        res.json(JSON.stringify({status:'bad'}));
-      });
+        Article.find(req.body.login,(err,article)=>{
+            if(err) return next(err);
+              if(article.length!=0){
+                res.json(JSON.stringify({status:'exist'}));  
+            }
+              else 
+                Article.create({email:req.body.login, pass:bcrypt.hashSync(req.body.pass, 3)}, (err, article)=>{
+                        if(err) return next(err);
+                        if(article)
+                        res.json(JSON.stringify({status:'ok', id:article[0]}));
+                        else
+                        res.json(JSON.stringify({status:'bad'}));
+                });
+        });
     }
 });
 app.delete('/articles/:id',(req,res,next)=>{

@@ -7,7 +7,26 @@ let knex = require ('knex')({
     database:'borviha'
     }
 });
+const jwt = require('jsonwebtoken');
+const env = require('./config');
+
 class Article{
+    static generateWebToken(id){
+        const today = new Date();
+        const expirationDate = new Date(today);
+        expirationDate.setDate(today.getDate() + 60);
+        return jwt.sign({
+            id,
+            exp: parseInt(expirationDate.getTime() / 1000, 10),
+          }, env.secret);
+    }
+    static decodeWebToken(token,callback){
+        jwt.verify(token, env.secret, function(err, decoded) {
+            debugger;
+           if (err) callback (false);
+           else callback(decoded);
+          });
+    }
     static findAdsRent(searchParams,callback){
        // debugger;
     knex.select().from('rent').where('price','<=',searchParams.price)
@@ -30,12 +49,12 @@ class Article{
     static all(callback){
         knex.select().from('user').asCallback(callback);
     }
-    static find(id,callback){
-        knex.select().from('user').where('email','=',id).asCallback(callback);
+    static find(objFind,callback){
+        knex.select().from('user').where(`${Object.keys(objFind)[0]}`,'=',`${Object.values(objFind)[0]}`).asCallback(callback);
     }
     static create(data,callback)
     {  
-        debugger;
+    debugger;
      knex('user').insert({login:data.email.split('@')[0] ,email:data.email, password:data.pass, role:'user'}).asCallback(callback);
     }
     static deleteItem(id, callback)

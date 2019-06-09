@@ -22,13 +22,11 @@ class Article{
     }
     static decodeWebToken(token,callback){
         jwt.verify(token, env.secret, function(err, decoded) {
-            debugger;
            if (err) callback (false);
            else callback(decoded);
           });
     }
     static findAdsRent(searchParams,callback){
-       // debugger;
     knex.select().from('rent').where('price','<=',searchParams.price)
     .andWhere('square','<=',searchParams.square)
     .andWhere('firma','like',(searchParams.firma==='all')?'%':searchParams.firma)
@@ -37,24 +35,23 @@ class Article{
     .asCallback(callback);
     }
     static findAdsRentCount(searchParams,callback){
-        // debugger;
      knex.select().count({totalCount:'*'}).from('rent').where('price','<=',searchParams.price)
      .andWhere('square','<=',searchParams.square)
      .andWhere('firma','like',(searchParams.firma==='all')?'%':searchParams.firma)
      .andWhere('address','like',(searchParams.address==='all')?'%':searchParams.address)
      .andWhere('floor','like',(searchParams.floor==='all')?'%':searchParams.floor).asCallback(callback);
      }
-    
-
     static all(callback){
         knex.select().from('user').asCallback(callback);
     }
     static find(objFind,callback){
         knex.select().from('user').where(`${Object.keys(objFind)[0]}`,'=',`${Object.values(objFind)[0]}`).asCallback(callback);
     }
+    static update(objFind,id,callback){
+        knex('user').where('id','=',id).update(objFind).asCallback(callback);
+    }
     static create(data,callback)
     {  
-    debugger;
      knex('user').insert({login:data.email.split('@')[0] ,email:data.email, password:data.pass, role:'user'}).asCallback(callback);
     }
     static deleteItem(id, callback)
